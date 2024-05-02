@@ -3,9 +3,7 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,7 @@ public class UserDaoHibernateImpl implements UserDao {
                     """;
         try (Session session = Util.getSessionFactory().getCurrentSession()) {
             session.beginTransaction();
-            Query query = session.createSQLQuery(sql).addEntity(User.class);
+            session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
             session.getTransaction().commit();
         }catch (Exception e) {
             throw new RuntimeException(e);
@@ -57,7 +55,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.getTransaction().commit();
         }catch (Exception e) {
             if (transaction != null) {
-                transaction.rollback();
+            transaction.rollback();
             }
             throw new RuntimeException(e);
         }
